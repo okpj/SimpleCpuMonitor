@@ -1,5 +1,4 @@
 ﻿using SimpleCpuMonitor.Helpers;
-using SimpleCpuMonitor.Services;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,12 +14,12 @@ namespace SimpleCpuMonitor.Worker
         /// <summary>
         /// Событие Получено состояние процессора
         /// </summary>
-        public static event Action<string> CPUStateReceivedEvent;
+        public static event Action<float?> CPUStateReceivedEvent;
 
         /// <summary>
         /// Инициировать событие Получено состояние процессора
         /// </summary>
-        public static void InvokeCPUStateReceived(string info) => CPUStateReceivedEvent?.Invoke(info);
+        public static void InvokeCPUStateReceived(float? info) => CPUStateReceivedEvent?.Invoke(info);
 
         /// <summary>
         /// Событие Произошла перегрузка процессора
@@ -58,36 +57,48 @@ namespace SimpleCpuMonitor.Worker
         /// <summary>
         /// Запуск задачи мониторинга
         /// </summary>
-        /// <param name="maxUsage"></param>
-        /// <param name="service"></param>
-        /// <param name="token"></param>
+        /// <param name="maxUsage">Критичная нагрузка</param>
+        /// <param name="token">Токен</param>
         private static void StartMonitoringTask(float? maxUsage, CancellationToken token)
         {
-            Task.Run(() =>
-            {
-                while (!token.IsCancellationRequested)
-                {
-                    var totalLoad = CPUHelper.TotalLoad;
-                    InvokeCPUStateReceived(totalLoad?.ToString());
-                    if (maxUsage.HasValue && totalLoad.HasValue && totalLoad.Value > maxUsage)
-                    {
-                        InvokeCPUOverload(totalLoad.Value);
-                    }
+            Task.Run(() => MonitoringProcess(maxUsage, token), token)
+                .ContinueWith(result => TaskСompletion(result));
+        }
 
-                    Thread.Sleep(2000);
-                }
-            }, token)
-            .ContinueWith(result =>
+        /// <summary>
+        /// Логика мониторинга
+        /// </summary>
+        /// <param name="maxUsage">Критичная нагрузка</param>
+        /// <param name="token">Токен</param>
+        private static void MonitoringProcess(float? maxUsage, CancellationToken token)
+        {
+            while (!token.IsCancellationRequested)
             {
-                if (result.IsFaulted)
+                var totalLoad = CPUHelper.TotalLoad;
+                InvokeCPUStateReceived(totalLoad);
+                if (maxUsage.HasValue && totalLoad.HasValue && totalLoad.Value > maxUsage)
                 {
-                    if (result.Exception != null)
-                    {
-                        Serilog.Log.Error(result.Exception, "StartMonitoringTask");
-                    }
-                    _monitoringTaskTokenSource.Dispose();
+                    InvokeCPUOverload(totalLoad.Value);
                 }
-            });
+
+                Thread.Sleep(1000);
+            }
+        }
+
+        /// <summary>
+        /// Завершение таска
+        /// </summary>
+        /// <param name="result"></param>
+        private static void TaskСompletion(Task result)
+        {
+            if (result.IsFaulted)
+            {
+                if (result.Exception != null)
+                {
+                    Serilog.Log.Error(result.Exception, "StartMonitoringTask");
+                }
+                _monitoringTaskTokenSource.Dispose();
+            }
         }
 
         /// <summary>

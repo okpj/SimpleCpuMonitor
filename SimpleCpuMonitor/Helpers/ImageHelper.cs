@@ -3,8 +3,19 @@ using System.IO;
 
 namespace SimpleCpuMonitor.Helpers
 {
+    /// <summary>
+    /// Хелпео для Image
+    /// </summary>
     public static class ImageHelper
     {
+        /// <summary>
+        /// Преобразовать текст в изображение
+        /// </summary>
+        /// <param name="text">Текст</param>
+        /// <param name="fontName">Название шрифта</param>
+        /// <param name="fontSize">Размер шрифта</param>
+        /// <param name="textMargin">Отступы</param>
+        /// <returns></returns>
         public static byte[] TextToImage(string text, string fontName, int fontSize, int textMargin = 0)
         {
             SizeF textSize;
@@ -19,7 +30,6 @@ namespace SimpleCpuMonitor.Helpers
                 }
             }
 
-
             using (image = new Bitmap((int)textSize.Width + textMargin, (int)textSize.Height + textMargin))
             {
                 drawing = Graphics.FromImage(image);
@@ -30,15 +40,20 @@ namespace SimpleCpuMonitor.Helpers
                 drawing.DrawString(text, font, textBrush, 0, 0);
                 drawing.Save();
 
-                return ImageToByteArray(image);
+                return image.ToByteArray();
             }
 
         }
 
-        public  static byte[] ImageToByteArray(System.Drawing.Image imageIn)
+        /// <summary>
+        /// Преобразовать Image в массив байт
+        /// </summary>
+        /// <param name="image">Исходное изображение</param>
+        /// <returns></returns>
+        public static byte[] ToByteArray(this Image image)
         {
             MemoryStream ms = new MemoryStream();
-            imageIn.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
+            image.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
             return ms.ToArray();
         }
     }

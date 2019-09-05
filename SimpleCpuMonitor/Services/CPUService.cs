@@ -21,10 +21,9 @@ namespace SimpleCpuMonitor.Services
         public byte[] GetSnapshotCPULoad()
         {
             var load = CPUHelper.TotalLoad;
-            var image = ImageHelper.TextToImage(load.ToString(), "Arial", 15);
+            var image = ImageHelper.TextToImage(load?.ToString() ?? "", "Arial", 15);
             return image;
         }
-
-        
+       
     }
 }

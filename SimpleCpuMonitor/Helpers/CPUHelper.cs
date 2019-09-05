@@ -3,6 +3,9 @@ using System.Linq;
 
 namespace SimpleCpuMonitor.Helpers
 {
+    /// <summary>
+    /// Хелпер для CPU
+    /// </summary>
     public static class CPUHelper
     {
         /// <summary>
