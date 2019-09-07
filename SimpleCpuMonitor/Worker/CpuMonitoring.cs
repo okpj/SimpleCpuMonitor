@@ -1,7 +1,6 @@
 ﻿using SimpleCpuMonitor.Helpers;
 using System;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace SimpleCpuMonitor.Worker
 {
@@ -33,82 +32,48 @@ namespace SimpleCpuMonitor.Worker
 
         #endregion
 
-        private static CancellationTokenSource _monitoringTaskTokenSource;
+        /// <summary>
+        /// Таймер
+        /// </summary>
+        private static Timer _timer;
 
         /// <summary>
-        /// Запуск мониторинга CPU
+        /// Запуск мониторинга
         /// </summary>
-        public static void StartCpuMonitoring(float? maxUsage = null)
+        /// <param name="maxUsage"></param>
+        /// <param name="interval"></param>
+        public static void StartCpuMonitoring(float maxUsage = 80.0F, int interval = 1000)
         {
-            try
-            {
-                Serilog.Log.Information("Мониторинг запущен...");
-                _monitoringTaskTokenSource = new CancellationTokenSource();
-                CancellationToken token = _monitoringTaskTokenSource.Token;
-                StartMonitoringTask(maxUsage, token);
-            }
-            catch (Exception ex)
-            {
-                Serilog.Log.Error(ex, "StartCpuMonitoring");
-                _monitoringTaskTokenSource.Dispose();
-            }
+            TimerCallback timerCallback = new TimerCallback(DataRequest);
+            _timer = new Timer(timerCallback, maxUsage, 0, interval);
+            Serilog.Log.Information("Мониторинг запущен...");
         }
 
         /// <summary>
-        /// Запуск задачи мониторинга
-        /// </summary>
-        /// <param name="maxUsage">Критичная нагрузка</param>
-        /// <param name="token">Токен</param>
-        private static void StartMonitoringTask(float? maxUsage, CancellationToken token)
-        {
-            Task.Run(() => MonitoringProcess(maxUsage, token), token)
-                .ContinueWith(result => TaskСompletion(result));
-        }
-
-        /// <summary>
-        /// Логика мониторинга
-        /// </summary>
-        /// <param name="maxUsage">Критичная нагрузка</param>
-        /// <param name="token">Токен</param>
-        private static void MonitoringProcess(float? maxUsage, CancellationToken token)
-        {
-            while (!token.IsCancellationRequested)
-            {
-                var totalLoad = CPUHelper.TotalLoad;
-                InvokeCPUStateReceived(totalLoad);
-                if (maxUsage.HasValue && totalLoad.HasValue && totalLoad.Value > maxUsage)
-                {
-                    InvokeCPUOverload(totalLoad.Value);
-                }
-
-                Thread.Sleep(1000);
-            }
-        }
-
-        /// <summary>
-        /// Завершение таска
-        /// </summary>
-        /// <param name="result"></param>
-        private static void TaskСompletion(Task result)
-        {
-            if (result.IsFaulted)
-            {
-                if (result.Exception != null)
-                {
-                    Serilog.Log.Error(result.Exception, "StartMonitoringTask");
-                }
-                _monitoringTaskTokenSource.Dispose();
-            }
-        }
-
-        /// <summary>
-        /// Завершить мониторинг
+        /// Остановка мониторинга
         /// </summary>
         public static void StopCpuMonitoring()
         {
-            _monitoringTaskTokenSource.Cancel();
+            _timer?.Dispose();
             Serilog.Log.Information("Мониторинг остановлен...");
         }
 
+        /// <summary>
+        /// Получить данные
+        /// </summary>
+        /// <param name="maxUsage">Критичная загрузка процессора</param>
+        public static void DataRequest(object maxUsage)
+        {
+            var totalLoad = CPUHelper.TotalLoad;
+            InvokeCPUStateReceived(totalLoad);
+
+            if (float.TryParse(maxUsage.ToString(), out float maxValue))
+            {
+                if (totalLoad.HasValue && totalLoad.Value > maxValue)
+                {
+                    InvokeCPUOverload(totalLoad.Value);
+                }
+            }
+        }
     }
 }

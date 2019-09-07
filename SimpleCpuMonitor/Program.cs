@@ -8,9 +8,11 @@ namespace SimpleCpuMonitor
     {
         public static void Main(string[] args)
         {
+
             CpuMonitoring.StartCpuMonitoring();
             CreateWebHostBuilder(args).Build().Run();
         }
+
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
