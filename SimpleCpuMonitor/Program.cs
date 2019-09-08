@@ -10,6 +10,7 @@ namespace SimpleCpuMonitor
         {
 
             CpuMonitoring.StartCpuMonitoring();
+            CpuMonitoring.CPUOverloadEvent += Sender.SendOverloadInfo;
             CreateWebHostBuilder(args).Build().Run();
         }
 

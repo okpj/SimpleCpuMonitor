@@ -7,7 +7,7 @@ namespace SimpleCpuMonitor.Worker
     /// </summary>
     public static class SnapshotGenerator
     {
-        public static int FontSize { get; set; } = 24;
+        public static int FontSize { get; set; } = 72;
         public static string Font { get; set; } = "Arial";
 
         private static byte[] _imageByte = null;

@@ -42,7 +42,7 @@ namespace SimpleCpuMonitor.Worker
         /// </summary>
         /// <param name="maxUsage"></param>
         /// <param name="interval"></param>
-        public static void StartCpuMonitoring(float maxUsage = 80.0F, int interval = 1000)
+        public static void StartCpuMonitoring(float maxUsage = 30.0F, int interval = 1000)
         {
             TimerCallback timerCallback = new TimerCallback(DataRequest);
             _timer = new Timer(timerCallback, maxUsage, 0, interval);
