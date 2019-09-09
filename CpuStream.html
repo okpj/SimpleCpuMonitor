@@ -21,9 +21,8 @@
           //};
           
           var on_connect = function (x) {
-              id = client.subscribe("/exchange/test1/test1", function (d) {
-                  
-                  console.log(d.body);
+              id = client.subscribe("/exchange/cpu_exchange/cpu_overload", function (d) {
+                 // console.log(d.body);
               });
           };
           var on_error = function () {

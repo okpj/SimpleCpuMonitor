@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using SimpleCpuMonitor.Worker;
 
 namespace SimpleCpuMonitor
 {
@@ -9,8 +8,6 @@ namespace SimpleCpuMonitor
         public static void Main(string[] args)
         {
 
-            CpuMonitoring.StartCpuMonitoring();
-            CpuMonitoring.CPUOverloadEvent += Sender.SendOverloadInfo;
             CreateWebHostBuilder(args).Build().Run();
         }
 

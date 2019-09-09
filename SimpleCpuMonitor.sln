@@ -5,6 +5,10 @@ VisualStudioVersion = 15.0.28307.645
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleCpuMonitor", "SimpleCpuMonitor\SimpleCpuMonitor.csproj", "{E09B8E02-1AC3-4274-9DBE-2D2A4E3CF301}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleCpuMonitor.Container", "SimpleCpuMonitor.Container\SimpleCpuMonitor.Container.csproj", "{2E5335A7-48C6-463A-95DD-FF26F063E752}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleCpuMonitor.Configuration", "SimpleCpuMonitor.Configuration\SimpleCpuMonitor.Configuration.csproj", "{99F5EC83-5CCD-470D-9DF5-4DFAA3DBA305}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{E09B8E02-1AC3-4274-9DBE-2D2A4E3CF301}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E09B8E02-1AC3-4274-9DBE-2D2A4E3CF301}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E09B8E02-1AC3-4274-9DBE-2D2A4E3CF301}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E5335A7-48C6-463A-95DD-FF26F063E752}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E5335A7-48C6-463A-95DD-FF26F063E752}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E5335A7-48C6-463A-95DD-FF26F063E752}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E5335A7-48C6-463A-95DD-FF26F063E752}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99F5EC83-5CCD-470D-9DF5-4DFAA3DBA305}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99F5EC83-5CCD-470D-9DF5-4DFAA3DBA305}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99F5EC83-5CCD-470D-9DF5-4DFAA3DBA305}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99F5EC83-5CCD-470D-9DF5-4DFAA3DBA305}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

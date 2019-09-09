@@ -1,4 +1,6 @@
-﻿using SimpleCpuMonitor.Helpers;
+﻿using SimpleCpuMonitor.Configuration;
+using SimpleCpuMonitor.Container;
+using SimpleCpuMonitor.Helpers;
 
 namespace SimpleCpuMonitor.Worker
 {
@@ -7,9 +9,6 @@ namespace SimpleCpuMonitor.Worker
     /// </summary>
     public static class SnapshotGenerator
     {
-        public static int FontSize { get; set; } = 72;
-        public static string Font { get; set; } = "Arial";
-
         private static byte[] _imageByte = null;
         public static byte[] CPUSnapShot => _imageByte;
 
@@ -35,7 +34,9 @@ namespace SimpleCpuMonitor.Worker
         /// <param name="load"></param>
         private static void FillInCurrentPicture(float? load)
         {
-            _imageByte = ImageHelper.TextToImage(load?.ToString() ?? "", Font, FontSize);
+            var font = CompositionRoot.Container.GetInstance<SnapshotConfiguration>().Font;
+            var fontSize = CompositionRoot.Container.GetInstance<SnapshotConfiguration>().FontSize;
+            _imageByte = ImageHelper.TextToImage(load?.ToString() ?? "", font, fontSize);
         }
     }
 }
