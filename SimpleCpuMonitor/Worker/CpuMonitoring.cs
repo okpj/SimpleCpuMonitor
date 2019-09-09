@@ -62,7 +62,7 @@ namespace SimpleCpuMonitor.Worker
         /// Получить данные
         /// </summary>
         /// <param name="maxUsage">Критичная загрузка процессора</param>
-        public static void DataRequest(object maxUsage)
+        private static void DataRequest(object maxUsage)
         {
             var totalLoad = CPUHelper.TotalLoad;
             InvokeCPUStateReceived(totalLoad);

@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
 
 namespace SimpleCpuMonitor.Model
 {
@@ -10,7 +9,7 @@ namespace SimpleCpuMonitor.Model
         /// Время
         /// </summary>
         [JsonProperty("date_time")]
-        public DateTime DateTime { get; set; }
+        public string DateTime { get; set; }
 
         /// <summary>
         /// Загрузка CPU

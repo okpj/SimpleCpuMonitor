@@ -54,7 +54,7 @@ namespace SimpleCpuMonitor.Controllers
             }
 
             SnapshotGenerator.StopImageStream();
-            return null;
+            return Ok();
         }
     }
 }

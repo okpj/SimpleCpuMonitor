@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>CPU Stream</title>
+    <script src="stomp.js"></script>
+    <link rel="stylesheet" href="styles.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+</head>
+
+<body>
+
+
+    <header>
+        <h2>Simple CPU Monitoring</h2>
+    </header>
+
+    <section>
+        <div id="img">
+            <img src="http://localhost:5000/api/cpu/getmjpeg" width="200" height="150">
+        </div>
+
+        <div id="messages">
+            <textarea id="message_text">
+
+  </textarea>
+    </section>
+    <script>
+        var client;
+        var textarea = document.getElementById("message_text");
+
+        var on_connect = function (x) {
+            id = client.subscribe("/exchange/cpu_load/", function (d) {
+                var data = JSON.parse(d.body);
+                textarea.innerHTML += "\n"+data["date_time"] + ": " + data["usage"] + "%";
+            });
+        };
+        var on_error = function () {
+            console.log('error');
+            setTimeout(connect, 3000)
+            console.log('reconnect in 3 seconds');
+        };
+
+        function connect() {
+            var ws = new WebSocket('ws://' + 'localhost' + ':15674/ws');
+            client = Stomp.over(ws);
+            client.connect('guest', 'guest', on_connect, on_error, '/');
+        }
+
+        connect();
+    </script>
+</body>
+
+</html>

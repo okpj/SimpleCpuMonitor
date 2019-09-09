@@ -10,7 +10,11 @@ namespace SimpleCpuMonitor.Worker
 {
     public class Sender
     {
-        public static IConnection GetConnection()
+        /// <summary>
+        /// Получить соединение
+        /// </summary>
+        /// <returns></returns>
+        private static IConnection GetConnection()
         {
             return new ConnectionFactory
             {
@@ -20,35 +24,43 @@ namespace SimpleCpuMonitor.Worker
             }.CreateConnection();
         }
 
-
+        /// <summary>
+        /// Отправить информацию о перегрузке
+        /// </summary>
+        /// <param name="value"></param>
         public static void SendOverloadInfo(float value)
         {
             var message = new CpuMessage
             {
-                DateTime = DateTime.Now,
+                DateTime = DateTime.Now.ToString("hh:mm:ss"),
                 Usage = value
             };
 
             Send(JsonConvert.SerializeObject(message));
         }
 
-        public static void Send(string message)
+        private static void Send(string message)
         {
-            var exchange = CompositionRoot.Container.GetInstance<RabbitMQConfigurations>().Exchange;
-            var routingKey = CompositionRoot.Container.GetInstance<RabbitMQConfigurations>().RoutingKey;
-            var type = CompositionRoot.Container.GetInstance<RabbitMQConfigurations>().Type;
-
-            using (var connection = GetConnection())
-            using (var channel = connection.CreateModel())
+            try
             {
-                //channel.QueueDeclare("test_q", false, false, false, null);
-                channel.ExchangeDeclare(exchange, type);
-                var body = Encoding.UTF8.GetBytes(message);
+                var exchange = CompositionRoot.Container.GetInstance<RabbitMQConfigurations>().Exchange;
+                var routingKey = CompositionRoot.Container.GetInstance<RabbitMQConfigurations>().RoutingKey;
+                var type = CompositionRoot.Container.GetInstance<RabbitMQConfigurations>().Type;
 
-                channel.BasicPublish(exchange: exchange, routingKey: routingKey, basicProperties: null, body: body);
-
-                Console.WriteLine($"{DateTime.Now}: {message}");
+                using (var connection = GetConnection())
+                using (var channel = connection.CreateModel())
+                {
+                    channel.ExchangeDeclare(exchange, type);
+                    var body = Encoding.UTF8.GetBytes(message);
+                    channel.BasicPublish(exchange: exchange, routingKey: routingKey, basicProperties: null, body: body);
+                    //Console.WriteLine($"{DateTime.Now}: {message}");
+                }
             }
+            catch (Exception ex)
+            {
+                Serilog.Log.Error(ex, "Sender.Send");
+            }
+            
         }
     }
 }

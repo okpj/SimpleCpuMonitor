@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using SimpleCpuMonitor.Configuration;
 using SimpleCpuMonitor.Container;
-using SimpleCpuMonitor.Services;
 using SimpleCpuMonitor.Worker;
 using StructureMap;
 
@@ -35,7 +28,6 @@ namespace SimpleCpuMonitor
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<ICPUService, CPUService>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             _container.Populate(services);
         }
