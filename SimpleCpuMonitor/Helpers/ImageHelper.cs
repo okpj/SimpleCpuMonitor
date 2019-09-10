@@ -16,7 +16,7 @@ namespace SimpleCpuMonitor.Helpers
         /// <param name="fontSize">Размер шрифта</param>
         /// <param name="textMargin">Отступы</param>
         /// <returns></returns>
-        public static byte[] TextToImage(string text, string fontName, int fontSize, int textMargin = 0)
+        public static byte[] TextToImage(string text, string fontName, int fontSize)
         {
             SizeF textSize;
             Image image;
@@ -30,7 +30,7 @@ namespace SimpleCpuMonitor.Helpers
                 }
             }
 
-            using (image = new Bitmap((int)textSize.Width + textMargin, (int)textSize.Height + textMargin))
+            using (image = new Bitmap((int)textSize.Width, (int)textSize.Height))
             {
                 drawing = Graphics.FromImage(image);
                 var color = Color.White;

@@ -15,7 +15,8 @@ namespace SimpleCpuMonitor.Controllers
     [ApiController]
     public class CPUController : ControllerBase
     {
-        private string _contentTypeForMJpeg = "multipart/x-mixed-replace; boundary=--separator";
+        private string _boundary = "--separato";
+        private string _contentTypeForMJpeg = "multipart/x-mixed-replace; boundary=";
         public CPUController() { }
 
         /// <summary>
@@ -28,7 +29,7 @@ namespace SimpleCpuMonitor.Controllers
         {
             SnapshotGenerator.StartImageStream();
             Response.Clear();
-            Response.ContentType = _contentTypeForMJpeg;
+            Response.ContentType = $"{_contentTypeForMJpeg}{_boundary}";
             var encoding = new ASCIIEncoding();
             var outputStream = new MemoryStream();
             while (!Response.HttpContext.RequestAborted.IsCancellationRequested)
@@ -38,7 +39,7 @@ namespace SimpleCpuMonitor.Controllers
                     var buf = SnapshotGenerator.CPUSnapShot;
                     if (buf != null)
                     {
-                        var boundaryString = new StringBuilder($"\r\n--separator\r\nContent-Type: image/jpeg\r\nContent-Length:{buf.Length}\r\n\r\n");
+                        var boundaryString = new StringBuilder($"\r\n{_boundary}\r\nContent-Type: image/jpeg\r\nContent-Length:{buf.Length}\r\n\r\n");
                         var boundary = encoding.GetBytes(boundaryString.ToString());
                         outputStream.Write(boundary, 0, boundary.Length);
                         outputStream.Write(buf, 0, buf.Length);
