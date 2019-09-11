@@ -52,7 +52,7 @@ namespace SimpleCpuMonitor.Worker
                 {
                     channel.ExchangeDeclare(exchange, type);
                     var body = Encoding.UTF8.GetBytes(message);
-                    channel.BasicPublish(exchange: exchange, routingKey: routingKey, basicProperties: null, body: body);
+                    channel.BasicPublish(exchange: exchange, routingKey: routingKey ?? "", basicProperties: null, body: body);
                     //Console.WriteLine($"{DateTime.Now}: {message}");
                 }
             }
